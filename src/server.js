@@ -1,9 +1,13 @@
-const express = require("express");
+import express from 'express';
 const app = express();
-require ("dotenv").config(); // load environment variables
-
+import userRoutes from './routes/userRoutes.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 app.use(express.json()); // middleware
+
+// Use user routes
+app.use(userRoutes);
 
 app.get("/", (request, response) => {
 
@@ -15,10 +19,4 @@ app.get("/", (request, response) => {
 let PORT = process.env.PORT || 3000; 
 
 //epxort the configured server
-module.exports = {
-    app,
-    PORT: PORT
-};
-
-
-
+export { app, PORT };
