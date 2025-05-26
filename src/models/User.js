@@ -48,5 +48,4 @@ userSchema.methods.comparePassword = async function(providedPassword) {
   return bcrypt.compare(providedPassword, this.passwordHash);
 };
 
-// Export the User model
 export default mongoose.model('User', userSchema);
