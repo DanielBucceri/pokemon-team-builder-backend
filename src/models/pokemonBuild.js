@@ -7,12 +7,12 @@ const PokemonBuildSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  // The generation version of the Pokemon (1 - 9)
+  // The generation (version) of the Pokemon (1 - 9)
   generation: {
     type: Number,
-    required: true,
-    min: 1,
-    max: 9,
+    required: [true, "Generation is required"],
+    min: [1, "Generation must be between 1 and 9"],
+    max: [9, "Generation must be between 1 and 9"],
   },
   nickname: {
     type: String,
@@ -21,12 +21,12 @@ const PokemonBuildSchema = new mongoose.Schema({
   // The species name of the Pokemon
   species: {
     type: String,
-    required: true,
+    required: [true, "Species is required"],
     trim: true,
   },
   nature: {
     type: String,
-    required: true,
+    required: false,
     trim: true,
   },
   // held item (optional)
@@ -34,6 +34,10 @@ const PokemonBuildSchema = new mongoose.Schema({
     type: String,
     trim: true,
     default: "",
+  },
+  ability: {
+    type: String,
+    trim: true,
   },
   // array of moves the Pokemon knows
   moves: {
@@ -46,7 +50,7 @@ const PokemonBuildSchema = new mongoose.Schema({
         message: "A build can have at most 4 moves.",
       },
     ],
-    required: true,
+    required: [true, "Moves are required"],
   },
   createdAt: {
     type: Date,
