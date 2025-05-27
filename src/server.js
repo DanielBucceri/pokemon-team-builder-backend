@@ -9,10 +9,10 @@ app.use(express.json()); // middleware
 // Use user routes
 app.use(userRoutes);
 
-app.get("/", (request, response) => {
+app.get("/", (req, res) => {
 
-    response.json({
-        message: "root route response"
+    res.json({
+        message: "Pokemon Team Builder API Root"
     });
 });
 
