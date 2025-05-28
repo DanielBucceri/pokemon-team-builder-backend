@@ -1,12 +1,15 @@
 import express from 'express';
-const app = express();
-import userRoutes from './routes/userRoutes.js';
 import dotenv from 'dotenv';
+
+import userRoutes from './routes/userRoutes.js';
+import authenticate from './middleware/authenticate.js';
+
 dotenv.config();
 
+const app = express();
 app.use(express.json()); // middleware
 
-// Use user routes
+// routes
 app.use(userRoutes);
 
 app.get("/", (req, res) => {
@@ -18,5 +21,4 @@ app.get("/", (req, res) => {
 
 let PORT = process.env.PORT || 3000; 
 
-//epxort the configured server
 export { app, PORT };
