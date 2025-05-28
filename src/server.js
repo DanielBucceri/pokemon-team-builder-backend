@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 
 import userRoutes from './routes/userRoutes.js';
+import pokemonBuildRoutes from './routes/pokemonBuildRoutes.js';
 import authenticate from './middleware/authenticate.js';
 
 dotenv.config();
@@ -11,6 +12,7 @@ app.use(express.json()); // middleware
 
 // routes
 app.use(userRoutes);
+app.use(pokemonBuildRoutes);
 
 app.get("/", (req, res) => {
 

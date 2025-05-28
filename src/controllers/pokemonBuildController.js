@@ -37,7 +37,7 @@ const getAllPokemonBuilds = async (req, res, next) => {
 // Get single build for current user
 const getSinglePokemonBuild = async (req, res, next) => {
     try {
-        const build = await pokemonBuild.findById({_id: req.params.id, user: req.user.id}).populate("user");
+        const build = await pokemonBuild.findOne({_id: req.params.id, user: req.user.id});
         
         if (!build) {
             return res.status(404).json({
@@ -53,13 +53,62 @@ const getSinglePokemonBuild = async (req, res, next) => {
         next(error);
     }
 };
+// Update a pokemon build
+const updatePokemonBuild = async (req, res, next) => {
+    try {
+        const build = await pokemonBuild.findOne({_id: req.params.id, user: req.user.id});
+        
+        if (!build) {
+            return res.status(404).json({
+                success: false,
+                message: "Build not found or unauthorized"
+            });
+        }
 
+        // Update the build
+        const updatedBuild = await pokemonBuild.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            { new: true, runValidators: true }
+        );
+        res.status(200).json({
+            success: true,
+            data: updatedBuild
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
-    
+// Delete a pokemon build
+const deletePokemonBuild = async (req, res, next) => {
+    try {
+        // Find the build and check if it belongs to user
+        const build = await pokemonBuild.findOne({_id: req.params.id, user: req.user.id});
+        
+        if (!build) {
+            return res.status(404).json({
+                success: false,
+                message: "Build not found or unauthorized"
+            });
+        }
 
+        // Delete the build
+        await pokemonBuild.findByIdAndDelete(req.params.id);
+        
+        res.status(200).json({
+            success: true,
+            message: "Build deleted successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export {
     createPokemonBuild,
     getAllPokemonBuilds,
-    getSinglePokemonBuild
+    getSinglePokemonBuild,
+    updatePokemonBuild,
+    deletePokemonBuild
 };
