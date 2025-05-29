@@ -7,13 +7,6 @@ const PokemonBuildSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  // The generation (version) of the Pokemon (1 - 9)
-  generation: {
-    type: Number,
-    required: [true, 'Generation is required'],
-    min: [1, 'Generation must be between 1 and 9'],
-    max: [9, 'Generation must be between 1 and 9'],
-  },
   nickname: {
     type: String,
     trim: true,
@@ -51,6 +44,15 @@ const PokemonBuildSchema = new mongoose.Schema({
       },
     ],
     required: [true, 'Moves are required'],
+  },
+  // Base stats for the Pokemon
+  stats: {
+    hp: { type: Number, default: 0 },
+    attack: { type: Number, default: 0 },
+    defense: { type: Number, default: 0 },
+    specialAttack: { type: Number, default: 0 },
+    specialDefense: { type: Number, default: 0 },
+    speed: { type: Number, default: 0 },
   },
   createdAt: {
     type: Date,

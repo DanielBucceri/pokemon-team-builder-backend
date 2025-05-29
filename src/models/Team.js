@@ -6,13 +6,6 @@ const TeamSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  generation: {
-    type: Number,
-    required: [true, 'Generation is required'],
-    min: [1, 'Generation must be between 1 and 9'],
-    max: [9, 'Generation must be between 1 and 9'],
-    immutable: true,
-  },
   pokemonBuilds: [
     {
       type: mongoose.Schema.Types.ObjectId,
