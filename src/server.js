@@ -14,13 +14,12 @@ app.use(express.json()); // middleware
 app.use(userRoutes);
 app.use(pokemonBuildRoutes);
 
-app.get("/", (req, res) => {
-
-    res.json({
-        message: "Pokemon Team Builder API Root"
-    });
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Pokemon Team Builder API Root',
+  });
 });
 
-let PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 
 export { app, PORT };

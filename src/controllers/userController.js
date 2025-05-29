@@ -1,5 +1,5 @@
-import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 export const registerUser = async (req, res) => {
   try {
@@ -14,14 +14,14 @@ export const registerUser = async (req, res) => {
     res.status(201).json({ message: 'User has been registered sucessfully!', username: user.username });
   } catch (error) {
     // Catch validation errors or duplicate username errors
-    
+
     if (error.code === 11000) { // duplicate username error
       return res.status(400).json({ message: 'Username already exists.' });
     }
-    if (error.name === 'ValidationError') { 
-return res.status(400).json({ message: 'Invalid input.' });
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ message: 'Invalid input.' });
     }
-    res.status(500).json({ message: 'Server error during registration.'});
+    res.status(500).json({ message: 'Server error during registration.' });
   }
 };
 
@@ -31,7 +31,7 @@ export const loginUser = async (req, res) => {
 
     // Find user by username and include the passwordHash field which was excluded
     const user = await User.findOne({ username }).select('+passwordHash');
-    
+
     // Check if user exists
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password.' });
@@ -46,13 +46,13 @@ export const loginUser = async (req, res) => {
     // Create the JWT token after success
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Login successful!',
       token,
       user: {
         id: user._id,
-        username: user.username
-      }
+        username: user.username,
+      },
     });
   } catch (error) {
     console.error('Login error:', error);

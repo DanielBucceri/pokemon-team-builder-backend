@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Username is required'],
     unique: true,
     trim: true,
-    minlength: [3, 'Username must be at least 3 characters long']
+    minlength: [3, 'Username must be at least 3 characters long'],
   },
   // password field for input and validation not stored in DB
   password: {
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Password is required'],
     minlength: [8, 'Password must be at least 8 characters long'],
     //  Make it easier for testing
-    
+
     //  validate: {
     //   validator: function(v) {
     //     // Password must contain at least one uppercase letter, one lowercase letter and one number
@@ -28,14 +28,14 @@ const userSchema = new mongoose.Schema({
   // passwordHash for storing the hashed password to db for security
   passwordHash: {
     type: String,
-    select: false 
-  }
+    select: false,
+  },
 }, {
-  timestamps: true 
+  timestamps: true,
 });
 
 // Pre save hook to hash the password before saving or updating
-userSchema.pre('save', async function() {
+userSchema.pre('save', async function () {
   // Only hash the password if the password field was provided
   if (this.isModified('password')) {
     // Hash the password with a salt of 10
@@ -46,7 +46,7 @@ userSchema.pre('save', async function() {
 });
 
 // Compare provided password with the stored hash password
-userSchema.methods.comparePassword = async function(providedPassword) {
+userSchema.methods.comparePassword = async function (providedPassword) {
   return bcrypt.compare(providedPassword, this.passwordHash);
 };
 

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-//JWT authentication middleware
+// JWT authentication middleware
 export const authenticate = (req, res, next) => {
   const authHeader = req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

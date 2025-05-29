@@ -1,8 +1,7 @@
-import {app, PORT} from './server.js';
+import { app, PORT } from './server.js';
 
 app.listen(PORT, () => {
-	console.log("Server is running on port " + process.env.PORT);
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
 
-export {app};
-
+export { app };

@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const PokemonBuildSchema = new mongoose.Schema({
   // Reference to the User who owns this build
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true,
   },
   // The generation (version) of the Pokemon (1 - 9)
   generation: {
     type: Number,
-    required: [true, "Generation is required"],
-    min: [1, "Generation must be between 1 and 9"],
-    max: [9, "Generation must be between 1 and 9"],
+    required: [true, 'Generation is required'],
+    min: [1, 'Generation must be between 1 and 9'],
+    max: [9, 'Generation must be between 1 and 9'],
   },
   nickname: {
     type: String,
@@ -21,7 +21,7 @@ const PokemonBuildSchema = new mongoose.Schema({
   // The species name of the Pokemon
   species: {
     type: String,
-    required: [true, "Species is required"],
+    required: [true, 'Species is required'],
     trim: true,
   },
   nature: {
@@ -33,7 +33,7 @@ const PokemonBuildSchema = new mongoose.Schema({
   item: {
     type: String,
     trim: true,
-    default: "",
+    default: '',
   },
   ability: {
     type: String,
@@ -44,13 +44,13 @@ const PokemonBuildSchema = new mongoose.Schema({
     type: [String],
     validate: [
       {
-        validator: function (arr) {
+        validator(arr) {
           return arr.length <= 4;
         },
-        message: "A build can have at most 4 moves.",
+        message: 'A build can have at most 4 moves.',
       },
     ],
-    required: [true, "Moves are required"],
+    required: [true, 'Moves are required'],
   },
   createdAt: {
     type: Date,
@@ -58,4 +58,4 @@ const PokemonBuildSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("PokemonBuild", PokemonBuildSchema);
+export default mongoose.model('PokemonBuild', PokemonBuildSchema);
