@@ -47,12 +47,12 @@ const PokemonBuildSchema = new mongoose.Schema({
   },
   // Base stats for the Pokemon
   stats: {
-    hp: { type: Number, default: 0 },
-    attack: { type: Number, default: 0 },
-    defense: { type: Number, default: 0 },
-    specialAttack: { type: Number, default: 0 },
-    specialDefense: { type: Number, default: 0 },
-    speed: { type: Number, default: 0 },
+    hp: { type: Number, required: [true, 'hp is required'] },
+    attack: { type: Number, required: [true, 'attack is required'] },
+    defense: { type: Number, required: [true, 'defense is required'] },
+    specialAttack: { type: Number, required: [true, 'specialAttack is required'] },
+    specialDefense: { type: Number, required: [true, 'specialDefense is required'] },
+    speed: { type: Number, required: [true, 'speed is required'] },
   },
   createdAt: {
     type: Date,
