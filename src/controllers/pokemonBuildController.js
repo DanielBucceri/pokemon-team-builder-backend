@@ -1,4 +1,4 @@
-import pokemonBuild from '../models/PokemonBuild.js';
+import PokemonBuild from '../models/PokemonBuild.js';
 
 // Create a new Pokemon build
 const createPokemonBuild = async (req, res, next) => {
@@ -7,7 +7,7 @@ const createPokemonBuild = async (req, res, next) => {
     req.body.user = req.user.id; // userid added via authenticate middleware
 
     // Create/save build
-    const build = await pokemonBuild.create(req.body);
+    const build = await PokemonBuild.create(req.body);
 
     // return build
     res.status(201).json({
@@ -22,7 +22,7 @@ const createPokemonBuild = async (req, res, next) => {
 // Get all builds for current user
 const getAllPokemonBuilds = async (req, res, next) => {
   try {
-    const builds = await pokemonBuild.find({ user: req.user.id });
+    const builds = await PokemonBuild.find({ user: req.user.id });
 
     res.status(200).json({
       success: true,
@@ -36,7 +36,7 @@ const getAllPokemonBuilds = async (req, res, next) => {
 // Get single build for current user
 const getSinglePokemonBuild = async (req, res, next) => {
   try {
-    const build = await pokemonBuild.findOne({ _id: req.params.id, user: req.user.id });
+    const build = await PokemonBuild.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!build) {
       return res.status(404).json({
@@ -55,7 +55,7 @@ const getSinglePokemonBuild = async (req, res, next) => {
 // Update a pokemon build
 const updatePokemonBuild = async (req, res, next) => {
   try {
-    const build = await pokemonBuild.findOne({ _id: req.params.id, user: req.user.id });
+    const build = await PokemonBuild.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!build) {
       return res.status(404).json({
@@ -65,7 +65,7 @@ const updatePokemonBuild = async (req, res, next) => {
     }
 
     // Update the build
-    const updatedBuild = await pokemonBuild.findByIdAndUpdate(
+    const updatedBuild = await PokemonBuild.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true, runValidators: true },
@@ -83,7 +83,7 @@ const updatePokemonBuild = async (req, res, next) => {
 const deletePokemonBuild = async (req, res, next) => {
   try {
     // Find the build and check if it belongs to user
-    const build = await pokemonBuild.findOne({ _id: req.params.id, user: req.user.id });
+    const build = await PokemonBuild.findOne({ _id: req.params.id, user: req.user.id });
 
     if (!build) {
       return res.status(404).json({
@@ -93,7 +93,7 @@ const deletePokemonBuild = async (req, res, next) => {
     }
 
     // Delete the build
-    await pokemonBuild.findByIdAndDelete(req.params.id);
+    await PokemonBuild.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
