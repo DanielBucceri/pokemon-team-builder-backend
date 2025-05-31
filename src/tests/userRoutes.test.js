@@ -1,20 +1,10 @@
 import request from 'supertest';
 import { app } from '../server.js';
-import mongoose from 'mongoose';
+import { setupDatabase, dropDatabase } from './testUtils.js';
 
-// Mock the database connection
-beforeAll(async () => {
-  // If there's no connection, create a mock one
-  if (mongoose.connection.readyState === 0) {
-    const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/test';
-    await mongoose.connect(MONGO_URI);
-  }
-});
-
-// Close database connection after all tests
-afterAll(async () => {
-  await mongoose.connection.close();
-});
+// Setup and drop database utils
+beforeAll(setupDatabase);
+afterAll(dropDatabase);
 
 describe('User Routes', () => {
   describe('POST /users/login', () => {
@@ -39,7 +29,7 @@ describe('User Routes', () => {
         });
 
       expect(response.status).toBe(400);
-      expect(response.body.message).toBe('Username and password are required.');
+      expect(response.body.message).toBe('Username or Password missing.');
     });
 
     it('should return 400 when sending empty body', async () => {
@@ -48,7 +38,7 @@ describe('User Routes', () => {
         .send({});
 
       expect(response.status).toBe(400);
-      expect(response.body.message).toBe('Username and password are required.');
+      expect(response.body.message).toBe('Username or Password missing.');
     });
   });
 });
