@@ -9,7 +9,7 @@ import {
   deleteTeam,
   getTeamById,
 } from '../controllers/teamController.js';
-import authenticate from '../middleware/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = express.Router();
 

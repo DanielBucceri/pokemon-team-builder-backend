@@ -60,16 +60,10 @@ export const seedDatabase = async () => {
     await User.deleteMany({});
     await PokemonBuild.deleteMany({});
 
-    // Create users
-    for (const user of testUsers) {
-      await User.create({
-        _id: user._id,
-        username: user.username,
-        password: user.password,
-      });
-    }
+    // create users in the db
+    await Promise.all(testUsers.map((user) => User.create({ ...user })));
 
-    // Create Pokemon builds for first user
+    // Create Pokemon builds for first user in db
     await Promise.all(testPokemonBuilds.map((build) => PokemonBuild.create({ ...build, user: testUsers[0]._id })));
 
     console.info('Database seeded successfully');
