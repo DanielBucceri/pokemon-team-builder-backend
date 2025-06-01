@@ -6,7 +6,6 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import pokemonBuildRoutes from './routes/pokemonBuildRoutes.js';
 import teamRoutes from './routes/teamRoutes.js';
-import authenticate from './middleware/authenticate.js';
 
 dotenv.config();
 
@@ -31,7 +30,6 @@ app.get('/', (req, res) => {
     message: 'Pokemon Team Builder API Root',
   });
 });
-
 
 const PORT = process.env.PORT || 3000;
 

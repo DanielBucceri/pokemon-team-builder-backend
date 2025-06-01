@@ -5,7 +5,7 @@ const TeamSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    immutable: true // teams cannot change ownership at this stage
+    immutable: true, // teams cannot change ownership at this stage
   },
   pokemonBuilds: [
     {
