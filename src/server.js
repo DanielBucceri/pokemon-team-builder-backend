@@ -27,7 +27,24 @@ app.use(teamRoutes);
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Pokemon Team Builder API Root',
+    message: 'Welcome to the Pokemon Team Builder API',
+  });
+});
+
+// 404 handler for routes that don't exist
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Route does not exist'
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).json({
+    success: false,
+    error: err.message
   });
 });
 
