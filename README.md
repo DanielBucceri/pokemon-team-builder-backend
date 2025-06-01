@@ -218,3 +218,12 @@ router.use(authenticate);
 const teams = await Team.find({ user: req.user.id })
   .populate('pokemonBuilds', 'species nickname stats');
 ```
+
+## References
+
+- Node.js Foundation 2024, 'ES Modules', Node.js v20 Documentation, Node.js Foundation, viewed 26 May 2025, <https://nodejs.org/api/esm.html>.
+- Express.js 2024, 'Using middleware', Express 5 Documentation, Express.js, viewed 27 May 2025, <https://expressjs.com/en/guide/using-middleware.html>.
+- Mongoose 2024, 'Query Population (``.populate()``)', Mongoose v8 Documentation, Automattic Inc., viewed 28 May 2025, <https://mongoosejs.com/docs/populate.html>.
+- MongoDB Inc. 2024, 'Query Documents', MongoDB Manual v8.0, MongoDB Inc., viewed 29 May 2025, <https://www.mongodb.com/docs/manual/tutorial/query-documents/>.
+- Auth0 2024, 'jsonwebtoken Usage (sign/verify)', GitHub Repository, viewed 30 May 2025, <https://github.com/auth0/node-jsonwebtoken#usage>.
+- Jest 2024, 'ECMAScript Modules', Jest Documentation, Meta Platforms Inc., viewed 31 May 2025, <https://jestjs.io/docs/ecmascript-modules>.
