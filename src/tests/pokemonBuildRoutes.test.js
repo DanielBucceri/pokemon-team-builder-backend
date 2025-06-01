@@ -115,7 +115,7 @@ describe('CRUD Operations', () => {
 
   it('should return 404 when build belongs to another user', async () => {
     const differentUserToken = generateAuthToken('6489a9c1e80e5737d8722107');
-    
+
     const response = await request(app)
       .get(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${differentUserToken}`);
@@ -162,7 +162,7 @@ describe('CRUD Operations', () => {
 
   it('should return 404 when trying to update a build belonging to another user', async () => {
     expect(testBuildId).toBeDefined();
-    
+
     const differentUserToken = generateAuthToken('6489a9c1e80e5737d8722107');
 
     const updatedBuild = {
