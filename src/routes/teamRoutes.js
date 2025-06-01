@@ -1,14 +1,15 @@
 import express from 'express';
-import { 
+import {
   createTeam,
   getAllTeams,
   getAvailableBuildsForTeam,
   addPokemonToTeam,
   removePokemonFromTeam,
   updateTeam,
-  deleteTeam
+  deleteTeam,
+  getTeamById,
 } from '../controllers/teamController.js';
-import authenticate from '../middleware/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = express.Router();
 
@@ -32,5 +33,9 @@ router.route('/teams/:id/available-builds')
 router.route('/teams/:id/pokemon/:buildId')
   .post(addPokemonToTeam)
   .delete(removePokemonFromTeam);
+
+// Get specific team
+router.route('/teams/:id')
+  .get(getTeamById);
 
 export default router;

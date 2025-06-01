@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import PokemonBuild from '../models/PokemonBuild.js';
-import jwt from 'jsonwebtoken';
 
 // Test user data
 export const testUsers = [
@@ -16,7 +16,7 @@ export const testUsers = [
     username: 'testuser2',
     password: 'password456',
     passwordHash: '',
-  }
+  },
 ];
 
 // Test Pokemon build data
@@ -33,8 +33,8 @@ export const testPokemonBuilds = [
       defense: 40,
       specialAttack: 50,
       specialDefense: 50,
-      speed: 90
-    }
+      speed: 90,
+    },
   },
   {
     species: 'Charizard',
@@ -48,9 +48,9 @@ export const testPokemonBuilds = [
       defense: 78,
       specialAttack: 109,
       specialDefense: 85,
-      speed: 100
-    }
-  }
+      speed: 100,
+    },
+  },
 ];
 
 // Seed the database with the test data
@@ -60,24 +60,13 @@ export const seedDatabase = async () => {
     await User.deleteMany({});
     await PokemonBuild.deleteMany({});
 
-    // Create users
-    for (const user of testUsers) {
-      await User.create({
-        _id: user._id,
-        username: user.username,
-        password: user.password
-      });
-    }
+    // create users in the db
+    await Promise.all(testUsers.map((user) => User.create({ ...user })));
 
-    // Create Pokemon builds for first user
-    for (const build of testPokemonBuilds) {
-      await PokemonBuild.create({
-        ...build,
-        user: testUsers[0]._id
-      });
-    }
+    // Create Pokemon builds for first user in db
+    await Promise.all(testPokemonBuilds.map((build) => PokemonBuild.create({ ...build, user: testUsers[0]._id })));
 
-    console.log('Database seeded successfully');
+    console.info('Database seeded successfully');
   } catch (error) {
     console.error('Error seeding database:', error);
     throw error;
@@ -85,16 +74,20 @@ export const seedDatabase = async () => {
 };
 
 // Generate a valid JWT token for a test user
-export const generateAuthToken = (userId = testUsers[0]._id) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
-};
+export const generateAuthToken = (
+  userId = testUsers[0]._id,
+) => jwt.sign(
+  { id: userId },
+  process.env.JWT_SECRET,
+  { expiresIn: '1h' },
+);
 
 // Clean up test data
 export const cleanupDatabase = async () => {
   try {
     await User.deleteMany({});
     await PokemonBuild.deleteMany({});
-    console.log('Database cleanup completed');
+    console.info('Database cleanup completed');
   } catch (error) {
     console.error('Error cleaning up database:', error);
   }

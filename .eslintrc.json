@@ -1,11 +1,20 @@
 {
   "env": {
     "node": true,
-    "jest": true
+    "jest": true,
+    "es2022": true
   },
   "extends": "airbnb-base",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
+  },
+  "rules": {
+    "import/extensions": "off", // for ES modules syntax
+    "no-underscore-dangle": "off", // for MongoDB ObjectId
+    "no-console": ["warn", { "allow": ["info", "error", "warn"] }], //keep for debugging
+    "max-len": ["error", { "code": 120 }],
+    "consistent-return": "off", //not all functions return a value
+    "no-await-in-loop": "off"
   }
 }

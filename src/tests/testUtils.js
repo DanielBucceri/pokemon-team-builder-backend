@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 import { seedDatabase, cleanupDatabase } from './seed.js';
 
-
-//Connect to MongoDB if not already connected
+// Connect to MongoDB if not already connected
 export const connectToDatabase = async () => {
   if (mongoose.connection.readyState === 0) {
     const MONGO_URI = 'mongodb://localhost:27017/test';
@@ -29,8 +28,7 @@ export const teardownTestDatabase = async () => {
   await disconnectFromDatabase();
 };
 
-
-//Call these in the test files to connect and disconnect from the database
+// Call these in the test files to connect and disconnect from the database
 export const setupDatabase = async () => {
   await connectToDatabase();
 };
@@ -39,9 +37,7 @@ export const dropDatabase = async () => {
   await disconnectFromDatabase();
 };
 
-
-
-// For tests that need seeded data we can use these 
+// For tests that need seeded data we can use these
 export const setupDatabaseWithSeed = async () => {
   await connectToDatabase();
   await seedDatabase();
