@@ -6,7 +6,6 @@ import { setupDatabase, dropDatabase } from './testUtils.js';
 beforeAll(setupDatabase);
 afterAll(dropDatabase);
 
-describe('User Routes', () => {
   describe('POST /users/login', () => {
     it('should return 401 when user does not exist', async () => {
       const response = await request(app)
@@ -41,4 +40,3 @@ describe('User Routes', () => {
       expect(response.body.message).toBe('Username or Password missing.');
     });
   });
-});
