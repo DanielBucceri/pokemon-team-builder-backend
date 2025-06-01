@@ -54,3 +54,40 @@ npm run lint
 # Automatically fix eligible style issues
 npm run lint:fix
 ```
+## External Libraries
+
+### Core Framework & Runtime
+- **Express.js**: Web application framework for building RESTful APIs with robust routing and middleware support
+- **Node.js**: JavaScript runtime environment enabling server-side JavaScript execution
+
+### Database & ODM
+- **MongoDB**: NoSQL document database chosen for flexible schema design suitable for gaming data structures
+- **Mongoose**: Object Document Mapping library providing schema validation, query building, and business logic hooks
+
+### Security & Authentication  
+- **jsonwebtoken**: Industry standard JWT implementation for secure user authentication and stateless session management
+- **bcryptjs**: Password hashing library using adaptive hashing algorithm for secure password storage with salt rounds
+- **cors**: Cross-Origin Resource Sharing middleware enabling controlled API access from different domains
+
+### Configuration & Environment
+- **dotenv**: Environment variable management for secure configuration and secret handling
+
+### Development & Testing
+- **Jest**: JavaScript testing framework with built-in test runner, assertion library, and mocking capabilities
+- **Supertest**: HTTP assertion library specifically designed for testing Express applications and API endpoints
+- **ESLint**: Static code analysis tool for identifying and fixing code quality issues according to Airbnb standards
+- **Nodemon**: Development utility that automatically restarts the server when file changes are detected
+
+### Hardware Requirements
+- **Development**: Any modern computer with at least 2 CPU cores, 2GB RAM, and 1GB free disk space. Works on Windows, macOS, or Linux.
+- **Recommended Node.js Version**: 18.x or higher
+- **Database**: MongoDB 5.0+ 
+
+### Alternative Technology Comparisons
+- **Express.js vs Fastify**: Chose Express for its mature ecosystem, extensive middleware support, and team familiarity
+- **MongoDB vs PostgreSQL**: Selected MongoDB for flexible schema design ideal for evolving game data requirements
+- **Jest vs Mocha**: Chose Jest for its comprehensive all-in-one testing solution with builtin mocking
+- **bcryptjs vs Argon2**: Selected bcryptjs for its proven security track record and wide industry adoption
+
+### Licensing
+All external dependencies use permissive licenses (MIT, Apache 2.0, BSD) compatible with commercial use and distribution.
