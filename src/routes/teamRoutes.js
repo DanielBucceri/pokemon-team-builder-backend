@@ -16,20 +16,20 @@ const router = express.Router();
 router.use(authenticate);
 
 // Team routes
-router.route('/')
+router.route('/teams')
   .get(getAllTeams)
   .post(createTeam);
 
-router.route('/:id')
+router.route('/teams/:id')
   .put(updateTeam)
   .delete(deleteTeam);
 
 // Only show the avlaialbe builds to front end to select from when adding to a team
-router.route('/:id/available-builds')
+router.route('/teams/:id/available-builds')
   .get(getAvailableBuildsForTeam);
 
 // Add/remove build from a team
-router.route('/:id/pokemon/:buildId')
+router.route('/teams/:id/pokemon/:buildId')
   .post(addPokemonToTeam)
   .delete(removePokemonFromTeam);
 
