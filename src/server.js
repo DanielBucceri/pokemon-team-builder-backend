@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import userRoutes from './routes/userRoutes.js';
 import pokemonBuildRoutes from './routes/pokemonBuildRoutes.js';
+import teamRoutes from './routes/teamRoutes.js';
 import authenticate from './middleware/authenticate.js';
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.json());
 // routes
 app.use(userRoutes);
 app.use(pokemonBuildRoutes);
+app.use(teamRoutes);
 
 app.get('/', (req, res) => {
   res.json({

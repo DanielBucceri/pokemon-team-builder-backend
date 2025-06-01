@@ -1,9 +1,15 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
+// Register a new user
 export const registerUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    // Check if username or password is missing
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username or Password missing.' });
+    }
 
     // Create a new user instance
     const user = new User({ username, password });
@@ -25,9 +31,15 @@ export const registerUser = async (req, res) => {
   }
 };
 
+// Login an existing user
 export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    // Check if username or password is missing
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username or Password missing.' });
+    }
 
     // Find user by username and include the passwordHash field which was excluded
     const user = await User.findOne({ username }).select('+passwordHash');
@@ -37,7 +49,7 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password.' });
     }
 
-    // Check if password correct
+    // Check if password is correct
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid username or password.' });
