@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import PokemonBuild from '../models/PokemonBuild.js';
+import Team from '../models/Team.js';
 
 // Register a new user
 export const registerUser = async (req, res) => {
@@ -69,5 +71,39 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error during login.' });
+  }
+};
+
+// Delete a user and all associated builds and teams
+export const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Verify the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Delete all pokemon builds associated with the user
+    const deletedBuilds = await PokemonBuild.deleteMany({ user: userId });
+    
+    // Delete all teams associated with the user
+    const deletedTeams = await Team.deleteMany({ user: userId });
+    
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ 
+      message: 'User and all associated data deleted successfully.',
+      deletedData: {
+        user: user.username,
+        builds: deletedBuilds.deletedCount,
+        teams: deletedTeams.deletedCount
+      }
+    });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: 'Server error during user deletion.' });
   }
 };

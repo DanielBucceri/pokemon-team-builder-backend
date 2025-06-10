@@ -54,6 +54,11 @@ const PokemonBuildSchema = new mongoose.Schema({
     specialDefense: { type: Number, required: [true, 'specialDefense is required'] },
     speed: { type: Number, required: [true, 'speed is required'] },
   },
+  notes: {
+    type: String,
+    trim: true,
+    default: '',
+  },
   createdAt: {
     type: Date,
     default: Date.now,
