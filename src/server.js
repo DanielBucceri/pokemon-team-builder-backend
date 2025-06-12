@@ -26,14 +26,15 @@ app.use(express.json());
 
 // routes
 app.use(userRoutes);
-app.use(pokemonBuildRoutes);
-app.use(teamRoutes);
 
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the Pokemon Team Builder API',
   });
 });
+
+app.use(pokemonBuildRoutes);
+app.use(teamRoutes);
 
 // 404 handler for routes that don't exist
 app.use((req, res) => {
