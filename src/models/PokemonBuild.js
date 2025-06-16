@@ -32,6 +32,19 @@ const PokemonBuildSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  // array of pokemon types
+  pokemonTypes: {
+    type: [String],
+    validate: [
+      {
+        validator(arr) {
+          return arr.length <= 2;
+        },
+        message: 'A Pokemon can have at most 2 types.',
+      },
+    ],
+    default: [],
+  },
   // array of moves the Pokemon knows
   moves: {
     type: [String],
@@ -44,6 +57,19 @@ const PokemonBuildSchema = new mongoose.Schema({
       },
     ],
     required: [true, 'Moves are required'],
+  },
+  // optional move types corresponding to moves
+  moveTypes: {
+    type: [String],
+    validate: [
+      {
+        validator(arr) {
+          return arr.length <= 4;
+        },
+        message: 'A build can have at most 4 move types.',
+      },
+    ],
+    default: [],
   },
   // Base stats for the Pokemon
   stats: {

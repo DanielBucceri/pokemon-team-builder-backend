@@ -124,7 +124,7 @@ const addPokemonToTeam = async (req, res, next) => {
     next(error);
   }
 };
-/// ////////////////////////////////
+
 const removePokemonFromTeam = async (req, res, next) => {
   try {
     // Find the team and check ownership
