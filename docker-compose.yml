@@ -1,0 +1,53 @@
+name: pokemon-team-builder-api
+
+services:
+  backend:
+    build:
+      context: .
+      target: development
+    image: pokemon-team-builder-api:${IMAGE_TAG:-latest}
+    container_name: pokemon-team-builder-api
+    # local port to container port forwarding
+    ports:
+      - "4000:4000"
+    env_file: .env
+    # server listeing port
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+    depends_on:
+      - mongo
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:latest
+    container_name: pokemon-team-builder-api-db-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  test:
+    profiles:
+      - test
+    build:
+      context: .
+      target: development
+      args:
+        - NODE_ENV=test
+    image: pokemon-team-builder-api:${IMAGE_TAG:-latest}
+    command: ["npm", "run", "test"]
+    depends_on:
+      - mongo
+    env_file: .env
+    environment:
+      - NODE_ENV=test
+    restart: "no"
+
+volumes:
+  mongo:
+    name: pokemon-team-builder-api-data-dev
