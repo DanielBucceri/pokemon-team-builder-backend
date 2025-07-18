@@ -22,6 +22,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        # create empty .env as env_file is not used in CI pipeline - injected env variables are used instead
+      - name: Create empty .env file for CI
+        run: touch .env
 
       - name: Build Prod image
         run: docker buildx build --target production -t pokemon-team-builder-api:${IMAGE_TAG:-latest} .
