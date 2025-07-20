@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # JWT_SECRET will be provided as environment variable
-      MONGODB_URI: mongodb://mongo:27017/pokemon_team_builder-dev
+      MONGODB_URI: mongodb://mongo:27017/pokemon_team_builder-test
       PORT: 4000
       NODE_ENV: production
       IMAGE_TAG: ${{ github.sha }}

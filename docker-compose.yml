@@ -23,17 +23,23 @@ services:
     restart: unless-stopped
 
   mongo:
-    image: mongo:latest
-    container_name: pokemon-team-builder-api-db-dev
+    image: mongo:${IMAGE_TAG:-latest}
+    container_name: pokemon-team-builder-api-dev-db
     ports:
       - "27017:27017"
     volumes:
       - mongo:/data/db
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   test:
     profiles:
-      - test
+      - testing_container
     build:
       context: .
       target: development
@@ -42,7 +48,8 @@ services:
     image: pokemon-team-builder-api:${IMAGE_TAG:-latest}
     command: ["npm", "run", "test"]
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
     environment:
       - NODE_ENV=test
       - MONGODB_URI=${MONGODB_URI}
