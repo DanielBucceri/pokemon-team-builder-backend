@@ -34,15 +34,13 @@ jobs:
         # Export all required environment variables
         # Create a secure file to store the JWT secret temporarily
         run: |
-          echo "${{ secrets.JWT_SECRET }}" > .jwt_secret
-          export JWT_SECRET=$(cat .jwt_secret)
-          rm .jwt_secret
-          export MONGODB_URI="mongodb://mongo:27017/pokemon_team_builder-test"
-          export PORT=4000
-          export NODE_ENV=test
-          export IMAGE_TAG="${{ github.sha }}"
-          export API_BASE_URL="http://backend:4000"
-          
+          # Pass the secret directly to docker-compose
+          JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          MONGODB_URI="mongodb://mongo:27017/pokemon_team_builder-test" \
+          PORT=4000 \
+          NODE_ENV=test \
+          IMAGE_TAG="${{ github.sha }}" \
+          API_BASE_URL="http://backend:4000" \
           docker compose --profile test up --build --abort-on-container-exit --exit-code-from test
 
       - name: Trigger Render deployment on success
