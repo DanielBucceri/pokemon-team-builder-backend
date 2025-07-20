@@ -1,6 +1,3 @@
-# Stages "FROM" are like having a different dockerfile("image") for different environments 
-# used to build and run different containers via the compose.yml file
-
 # Base build
 FROM node:alpine AS base
 
@@ -16,10 +13,8 @@ COPY package*.json ./
 # Install dependencies 
 RUN npm ci
 
-# Copy source code
 COPY . .
 
-# Expose port
 EXPOSE 4000
 
 # Start the application in development mode
