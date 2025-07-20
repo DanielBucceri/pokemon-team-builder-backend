@@ -1,5 +1,7 @@
 import request from 'supertest';
 import { app } from '../server.js';
+// If API_BASE_URL is set, use it with request(), otherwise use the app instance
+const api = process.env.API_BASE_URL ? request(process.env.API_BASE_URL) : request(app);
 import { setupDatabase, dropDatabase } from './testUtils.js';
 import { generateAuthToken } from './seed.js';
 
@@ -8,14 +10,14 @@ afterAll(dropDatabase);
 
 describe('Authentication', () => {
   it('should return 401 when no token is provided', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/teams');
     expect(response.status).toBe(401);
     expect(response.body.message).toBe('Access denied. No token provided.');
   });
 
   it('should return 401 when invalid token format is provided', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/teams')
       .set('Authorization', 'InvalidFormat');
     expect(response.status).toBe(401);
@@ -23,7 +25,7 @@ describe('Authentication', () => {
   });
 
   it('should return 401 when invalid token is provided', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/teams')
       .set('Authorization', 'Bearer invalidtoken');
     expect(response.status).toBe(401);
@@ -38,7 +40,7 @@ describe('CRUD Operations', () => {
   });
 
   it('should get all teams for authenticated user', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/teams')
       .set('Authorization', `Bearer ${validToken}`);
       // The response should be 200 and data should be an array even if empty
@@ -69,7 +71,7 @@ describe('CRUD Operations', () => {
       },
     };
 
-    const response = await request(app)
+    const response = await api
       .post('/builds')
       .set('Authorization', `Bearer ${validToken}`)
       .send(newBuild);
@@ -86,7 +88,7 @@ describe('CRUD Operations', () => {
       pokemonBuilds: [testBuildId],
     };
 
-    const response = await request(app)
+    const response = await api
       .post('/teams')
       .set('Authorization', `Bearer ${validToken}`)
       .send(newTeam);
@@ -108,7 +110,7 @@ describe('CRUD Operations', () => {
       pokemonBuilds: excessiveBuilds,
     };
 
-    const response = await request(app)
+    const response = await api
       .post('/teams')
       .set('Authorization', `Bearer ${validToken}`)
       .send(newTeam);
@@ -126,7 +128,7 @@ describe('CRUD Operations', () => {
       description: 'Updated description',
     };
 
-    const response = await request(app)
+    const response = await api
       .put(`/teams/${testTeamId}`)
       .set('Authorization', `Bearer ${validToken}`)
       .send(updatedTeam);
@@ -139,7 +141,7 @@ describe('CRUD Operations', () => {
   // Team Member Management
   it('should get builds owned by user but not in the specified team', async () => {
     // ensure previous test build is in the team
-    await request(app)
+    await api
       .post(`/teams/${testTeamId}/pokemon/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -161,7 +163,7 @@ describe('CRUD Operations', () => {
       },
     };
 
-    const buildResponse = await request(app)
+    const buildResponse = await api
       .post('/builds')
       .set('Authorization', `Bearer ${validToken}`)
       .send(secondBuild);
@@ -169,7 +171,7 @@ describe('CRUD Operations', () => {
     const secondBuildId = buildResponse.body.data._id;
 
     // check the available builds
-    const response = await request(app)
+    const response = await api
       .get(`/teams/${testTeamId}/available-builds`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -188,12 +190,12 @@ describe('CRUD Operations', () => {
 
   it('should add a Pokemon to a team', async () => {
     // Remove the build if it's already in the team from previous tests
-    await request(app)
+    await api
       .delete(`/teams/${testTeamId}/pokemon/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
     // Add it back
-    const response = await request(app)
+    const response = await api
       .post(`/teams/${testTeamId}/pokemon/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -202,7 +204,7 @@ describe('CRUD Operations', () => {
   });
 
   it('should remove a Pokemon from a team', async () => {
-    const response = await request(app)
+    const response = await api
       .delete(`/teams/${testTeamId}/pokemon/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -211,7 +213,7 @@ describe('CRUD Operations', () => {
   });
 
   it('should delete a team', async () => {
-    const response = await request(app)
+    const response = await api
       .delete(`/teams/${testTeamId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -219,7 +221,7 @@ describe('CRUD Operations', () => {
     expect(response.body.success).toBe(true);
 
     // check if team was removed and doesnt exist anymore
-    const deletedTeamResponse = await request(app)
+    const deletedTeamResponse = await api
       .get(`/teams/${testTeamId}`)
       .set('Authorization', `Bearer ${validToken}`);
 

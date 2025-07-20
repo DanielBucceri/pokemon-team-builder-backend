@@ -1,5 +1,7 @@
 import request from 'supertest';
 import { app } from '../server.js';
+// If API_BASE_URL is set, use it with request(), otherwise use the app instance
+const api = process.env.API_BASE_URL ? request(process.env.API_BASE_URL) : request(app);
 import { setupDatabase, dropDatabase } from './testUtils.js';
 import { generateAuthToken } from './seed.js';
 
@@ -10,7 +12,7 @@ afterAll(dropDatabase);
 // Test authentication requirements
 describe('Authentication', () => {
   it('should return 401 when no token is provided', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/builds');
 
     expect(response.status).toBe(401);
@@ -18,7 +20,7 @@ describe('Authentication', () => {
   });
 
   it('should return 401 when invalid token format is provided', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/builds')
       .set('Authorization', 'InvalidFormat');
 
@@ -27,7 +29,7 @@ describe('Authentication', () => {
   });
 
   it('should return 401 when invalid token is provided', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/builds')
       .set('Authorization', 'Bearer invalidtoken');
 
@@ -64,7 +66,7 @@ describe('CRUD Operations', () => {
       },
     };
 
-    const response = await request(app)
+    const response = await api
       .post('/builds')
       .set('Authorization', `Bearer ${validToken}`)
       .send(newBuild);
@@ -79,7 +81,7 @@ describe('CRUD Operations', () => {
   });
 
   it('should return all Pokemon builds when authenticated', async () => {
-    const response = await request(app)
+    const response = await api
       .get('/builds')
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -89,7 +91,7 @@ describe('CRUD Operations', () => {
   });
 
   it('should get a single Pokemon build by ID when authenticated', async () => {
-    const response = await request(app)
+    const response = await api
       .get(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -103,7 +105,7 @@ describe('CRUD Operations', () => {
   it('should return 404 when build does not exist', async () => {
     const nonExistentId = '507f1f77bcf86cd799439011';
 
-    const response = await request(app)
+    const response = await api
       .get(`/builds/${nonExistentId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -115,7 +117,7 @@ describe('CRUD Operations', () => {
   it('should return 404 when build belongs to another user', async () => {
     const differentUserToken = generateAuthToken('6489a9c1e80e5737d8722107');
 
-    const response = await request(app)
+    const response = await api
       .get(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${differentUserToken}`);
 
@@ -131,7 +133,7 @@ describe('CRUD Operations', () => {
       nickname: 'Updated Test Build',
     };
 
-    const response = await request(app)
+    const response = await api
       .put(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`)
       .send(updatedBuild);
@@ -149,7 +151,7 @@ describe('CRUD Operations', () => {
       nickname: 'This Will Fail',
     };
 
-    const response = await request(app)
+    const response = await api
       .put(`/builds/${nonExistentId}`)
       .set('Authorization', `Bearer ${validToken}`)
       .send(updatedBuild);
@@ -168,7 +170,7 @@ describe('CRUD Operations', () => {
       nickname: 'This Will Fail',
     };
 
-    const response = await request(app)
+    const response = await api
       .put(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${differentUserToken}`)
       .send(updatedBuild);
@@ -181,7 +183,7 @@ describe('CRUD Operations', () => {
   it('should delete a Pokemon build when authenticated', async () => {
     expect(testBuildId).toBeDefined();
 
-    const response = await request(app)
+    const response = await api
       .delete(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -190,7 +192,7 @@ describe('CRUD Operations', () => {
     expect(response.body.message).toBe('Build deleted successfully');
 
     // Verify the build no longer exists
-    const verifyResponse = await request(app)
+    const verifyResponse = await api
       .get(`/builds/${testBuildId}`)
       .set('Authorization', `Bearer ${validToken}`);
 
@@ -200,7 +202,7 @@ describe('CRUD Operations', () => {
   it('should return 404 when trying to delete a non-existent build', async () => {
     const nonExistentId = '507f1f77bcf86cd799439011';
 
-    const response = await request(app)
+    const response = await api
       .delete(`/builds/${nonExistentId}`)
       .set('Authorization', `Bearer ${validToken}`);
 

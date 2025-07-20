@@ -41,6 +41,7 @@ jobs:
           export PORT=4000
           export NODE_ENV=test
           export IMAGE_TAG="${{ github.sha }}"
+          export API_BASE_URL="http://backend:4000"
           
           docker compose --profile test up --build --abort-on-container-exit --exit-code-from test
 

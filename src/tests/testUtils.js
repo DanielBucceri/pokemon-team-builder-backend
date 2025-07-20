@@ -4,7 +4,7 @@ import { seedDatabase, cleanupDatabase } from './seed.js';
 // Connect to MongoDB if not already connected
 export const connectToDatabase = async () => {
   if (mongoose.connection.readyState === 0) {
-    const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/test';
+    const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/test';
     await mongoose.connect(MONGO_URI);
     console.log('Test database connected');
   }

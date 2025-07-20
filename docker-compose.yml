@@ -48,6 +48,7 @@ services:
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=${PORT:-4000}
+      - API_BASE_URL=http://backend:4000
     restart: "no"
 
 volumes:
