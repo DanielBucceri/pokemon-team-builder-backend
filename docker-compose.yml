@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
 
   mongo:
-    image: mongo:${IMAGE_TAG:-latest}
+    image: mongo:latest
     container_name: pokemon-team-builder-api-dev-db
     ports:
       - "27017:27017"
