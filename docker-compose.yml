@@ -39,7 +39,7 @@ services:
 
   test:
     profiles:
-      - testing_container
+      - test
     build:
       context: .
       target: development
