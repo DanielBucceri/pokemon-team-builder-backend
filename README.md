@@ -2,6 +2,128 @@
 
 A secure, JWT protected REST API that lets trainers design custom Pokémon builds, assemble competitive teams, and manage their collections programmatically. This back-end is intended for integration with a dedicated web or mobile application frontend.
 
+---
+
+# CI/CD Pipeline Documentation
+
+## Overview
+
+This project uses GitHub Actions to automate testing and deployment. The pipeline ensures code quality through automated testing and provides reliable deployment to production.
+
+## Pipeline Components
+
+### 1. Main CI/CD Workflow (`docker-ci.yml`)
+
+**Purpose**: Automated testing and deployment on code changes
+
+**Triggers**:
+- Push to `main` or `dev` branches  
+- Pull requests to `main` or `dev` branches
+
+**Process**:
+1. **Build**: Creates Docker production image
+2. **Test**: Runs Jest test suite in containerized environment  
+3. **Custom Reports**: Generates detailed test reports with build information
+4. **Deploy**: Triggers Render deployment on successful main branch builds
+
+**Key Features**:
+- Environment-specific configuration using secrets
+- Custom test report generation with build metadata
+- Artifact storage for test reports (14-day retention)
+
+### 2. Weekly Status Check (`weekly-check.yml`)
+
+**Purpose**: Scheduled monitoring and status reporting
+
+**Triggers**:
+- Weekly schedule (Mondays at 10 AM UTC)
+- Manual workflow dispatch
+
+**Features**:
+- Generates weekly status reports
+- Checks repository accessibility
+- Creates artifacts for status tracking
+
+## Technology Choices & Comparisons
+
+### CI/CD Platform: GitHub Actions
+
+**Why GitHub Actions was chosen:**
+
+| Criteria | GitHub Actions | Jenkins | GitLab CI |
+|----------|----------------|---------|-----------|
+| **Setup** |  No server needed |  Requires server setup |  GitLab-only |
+| **Cost** |  Free for public repos |  Infrastructure costs |  Limited free tier |
+| **Integration** |  Native GitHub |  Plugins needed |  Native GitLab |
+| **Learning Curve** | Simple YAML |  Complex configuration |  Moderate |
+
+**GitHub Actions benefits for this project:**
+- Zero infrastructure setup required
+- Seamless integration with GitHub repository
+- Extensive marketplace of pre-built actions
+- Excellent documentation and community support
+
+### Containerization: Docker
+
+**Docker provides consistent environments:**
+
+```
+Development → Testing → Production
+     ↓           ↓          ↓
+┌─────────┐ ┌─────────┐ ┌─────────┐
+│ Node.js │ │ Node.js │ │ Node.js │
+│MongoDB  │ │MongoDB  │ │MongoDB  │
+│Same Deps│ │Same Deps│ │Same Deps│
+└─────────┘ └─────────┘ └─────────┘
+```
+
+**Alternative approaches considered:**
+- **Direct deployment**: Rejected due to environment inconsistencies
+- **Virtual machines**: Rejected due to resource overhead
+- **Serverless**: Rejected due to database connection complexities
+
+### Testing Framework: Jest + Supertest
+
+**Chosen for comprehensive API testing:**
+
+| Feature | Jest + Supertest | Mocha + Chai | Vitest |
+|---------|------------------|--------------|--------|
+| **Setup** |  Minimal configuration |  Multiple packages |  Simple setup |
+| **API Testing** |  Built-in HTTP testing |  Additional tools needed |  External libraries |
+| **Mocking** |  Comprehensive mocking |  Separate library |  Built-in |
+| **Industry Usage** |  Widely adopted |  Established |  Growing |
+
+### Deployment Platform: Render
+
+**Selected for cloud hosting:**
+
+| Factor | Render | Heroku | AWS EC2 |
+|--------|--------|--------|---------|
+| **Ease of Use** |  Simple dashboard |  User-friendly |  Complex setup |
+| **Cost** |  Free tier available |  Paid plans only |  Pay-per-use |
+| **Docker Support** |  Native support |  Container registry |  Full flexibility |
+| **Database Integration** |  Built-in database options |  Add-on marketplace |  Full control |
+
+## Workflow Examples
+
+### Development Workflow
+```
+Code Changes → GitHub Push → Actions Trigger → Docker Build → Jest Tests → Custom Reports → Deploy (if main)
+```
+
+### Weekly Monitoring
+```
+Monday 10 AM → Scheduled Trigger → Status Check → Generate Report → Store Artifact
+```
+
+## Benefits
+
+- **Quality Assurance**: Automated testing prevents broken code deployment
+- **Consistency**: Docker ensures identical environments across stages  
+- **Traceability**: Custom reports provide detailed build information
+- **Monitoring**: Weekly checks maintain system health awareness
+- **Efficiency**: Automated processes reduce manual deployment errors
+
 
 # JavaScript Style Guide
 
