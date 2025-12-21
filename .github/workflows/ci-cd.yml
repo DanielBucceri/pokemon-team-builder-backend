@@ -1,0 +1,103 @@
+# Simple CI/CD pipeline for Node.js + MongoDB application
+# -------------------------------------------------------
+# This workflow keeps things minimal to suit a student-level project while still
+# demonstrating industry-standard practices.
+#
+# Key features
+# 1. Installs dependencies with `npm ci` (fast & reproducible)
+# 2. Spins up a MongoDB service container so the Jest integration tests can connect.
+# 3. Runs the full Jest test-suite and, if it passes on the `main` branch, builds a Docker
+#    image and deploys it to AWS ECS Fargate for zero-downtime containerized deployment.
+# 4. Persists the test results as a downloadable artifact so you can review them later.
+#
+# Secrets required (add in the repository → Settings → Secrets → Actions):
+#   JWT_SECRET           – secret used by the API for signing JSON Web Tokens
+#   AWS_ACCESS_KEY_ID    – AWS access key for ECS deployment
+#   AWS_SECRET_ACCESS_KEY – AWS secret key for ECS deployment
+#   AWS_REGION           – AWS region (e.g., us-east-1)
+#
+name: CI/CD
+
+on:
+  # ──────────────────── Triggers ────────────────────
+  push:
+    branches: [ "main", "dev" ]   # run for direct pushes
+  pull_request:
+    branches: [ "main", "dev" ]    # run for PRs targeting these branches
+  schedule:
+    - cron: "0 5 * * 1"            # run every Monday at 05:00 UTC to catch bit-rot
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Use a disposable MongoDB instance for integration tests
+    services:
+      mongo:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'" \
+          --health-interval 10s \
+          --health-timeout 5s \
+          --health-retries 5
+
+    env:
+      MONGODB_URI: mongodb://localhost:27017/test    # picked up by src/tests/testUtils.js
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+    steps:
+      - name: ⬇️  Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️  Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run lint & tests
+        run: |
+          npm run lint
+          npm test -- --ci --reporters=default --reporters=jest-junit
+
+      - name: 📚 Upload test reports (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            junit.xml
+            coverage/
+
+  deploy:
+    # Only deploy from the default branch *after* tests have passed
+    needs: test
+    if: github.ref == 'refs/heads/main' && success()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️  Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 🐳 Build and push Docker image
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          docker build -t pokemon-api:${{ github.sha }} .
+          docker tag pokemon-api:${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/pokemon-api:${{ github.sha }}
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/pokemon-api:${{ github.sha }}
+
+      - name: 🚀 Deploy to ECS
+        run: |
+          aws ecs update-service --cluster pokemon-cluster --service pokemon-api --force-new-deployment
+          aws ecs wait services-stable --cluster pokemon-cluster --services pokemon-api

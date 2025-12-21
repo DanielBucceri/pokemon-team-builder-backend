@@ -2,6 +2,8 @@
 
 A secure, JWT protected REST API that lets trainers design custom Pokémon builds, assemble competitive teams, and manage their collections programmatically. This back-end is intended for integration with a dedicated web or mobile application frontend.
 
+➡️ **Looking for the CI/CD setup?** You'll find a complete walk-through in [`docs/CI_CD.md`](docs/CI_CD.md).
+
 
 # JavaScript Style Guide
 
